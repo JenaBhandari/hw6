@@ -75,7 +75,9 @@ std::pair<std::set<std::string>, std::set<std::string> > parseDict(std::string f
 	return make_pair(dict, prefix);
 }
 
-std::set<std::string> boggle(const std::set<std::string>& dict, const std::set<std::string>& prefix, const std::vector<std::vector<char> >& board)
+std::set<std::string> boggle(const std::set<std::string>& dict, 
+const std::set<std::string>& prefix, 
+const std::vector<std::vector<char> >& board)
 {
 	std::set<std::string> result;
 	for(unsigned int i=0;i<board.size();i++)
@@ -91,9 +93,56 @@ std::set<std::string> boggle(const std::set<std::string>& dict, const std::set<s
 	return result;
 }
 
-bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>& prefix, const std::vector<std::vector<char> >& board, 
-								   std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc)
+bool boggleHelper(const std::set<std::string>& dict, 
+const std::set<std::string>& prefix, 
+const std::vector<std::vector<char> >& board, 
+std::string word, std::set<std::string>& result, 
+unsigned int r, unsigned int c, int dr, int dc)
 {
-//add your solution here!
+	//FALSE = backtrack!
+	// Check if current position (r,c) is within the bounds of the board
+	if (r >= board.size() || c >= board.size()) {
+			return false;
+	}
 
+	// Add the letter at position (r,c) to the current word
+	word += board[r][c];
+
+
+	// Recursively search for words starting from adjacent positions
+	bool checkNextLetter = true;
+	if (prefix.count(word) > 0)
+	{
+
+		checkNextLetter = boggleHelper(dict, prefix, board, word, result, r+dr, c+dc, dr, dc);
+		if (checkNextLetter == false)
+		{
+			if ((dict.count(word) > 0))
+			{
+	
+				result.insert(word);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		if ((dict.count(word) > 0))
+		{
+			
+			result.insert(word);
+			return true;
+		}
+		checkNextLetter = false;
+		return false;
+	}
+
+
+	return checkNextLetter;
+
+	
 }
